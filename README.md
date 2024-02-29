@@ -10,13 +10,20 @@ This is a very simple docker wrapper around openssl to give a basic CA and OCSP 
 
 __NOTE__: This will just create certs for testing and very basic openssl commands for the responder. This is for testing only.
 
+## Building
+
+Select directory of Repo and run:
+
+```
+docker build -t ocsp:latest .
+```
 
 ## Running
 
 Pass in a root doamin for the CA and the OCSP URL you would like to have in the OCSP extension in the certificates (this will be used as the OCSP responder to validate the cert).
 
 ```
-docker run -d --restart=always -e ROOT_DOMAIN=demo.redislabs.com -e OCSP_URL=http://127.0.0.1:2560 --name ocsp -p 2560:2560 ghcr.io/redislabs-training/ocsp-responder/ocsp-responder:latest
+docker run -d --restart=always -e ROOT_DOMAIN=lukesprojects.com -e OCSP_URL=http://10.0.16.5:2560 --name ocsp -p 2560:2560 ocsp:latest
 ```
 
 ## Creating Certs
@@ -32,7 +39,7 @@ docker exec -it ocsp ./create_san_wildcard_cert cluster-1 kurt-re.demo.redislabs
 ### Creating Certificates for clients or without the wildcard
 
 ```
-docker exec -it ocsp ./create_cert client-1 client.redis
+docker exec -it ocsp ./create_cert client-1 client-1 > client-1_cert.pem
 ```
 
 ## Creating a new cert 
@@ -64,12 +71,6 @@ And the cert CA chain:
 
 ```
 docker exec -it ocsp ./get_chain > /etc/opt/redislabs/ca-chain.pem
-```
-
-or just the intermediate:
-
-```
-docker exec -it ocsp ./get_cert intermediate > /etc/opt/redislabs/ca-intermediate.pem
 ```
 
 ## OCSP Status

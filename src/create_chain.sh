@@ -9,39 +9,38 @@ openssl req -config /root/tls/openssl.cnf \
       -key /root/tls/private/ca.key.pem \
       -new -x509 -days 3650 -sha256 -extensions v3_ca \
       -out /root/tls/certs/ca.cert.pem \
-      -subj "/C=US/ST=CA/L=TE/O=TEST/OU=TESTING/CN=intermediate-cert.$ROOT_DOMAIN/EMAIL=sec@$ROOT_DOMAIN"
+      -subj "/C=US/ST=CA/L=TE/O=TEST/OU=TESTING/CN=intermediate-cert.$ROOT_DOMAIN"
 
 
 echo "Created Root Certificate"
 
 chmod 444 /root/tls/certs/ca.cert.pem
 
-openssl genrsa -out intermediate/private/intermediate.key.pem 2048
-chmod 400 /root/tls/intermediate/private/intermediate.key.pem
+#openssl genrsa -out intermediate/private/intermediate.key.pem 2048
+#chmod 400 /root/tls/intermediate/private/intermediate.key.pem
 
-echo "Created Intermediate Private Key"
+#echo "Created Intermediate Private Key"
 
-openssl req -config intermediate/openssl.cnf \
-      -key /root/tls/intermediate/private/intermediate.key.pem \
-      -new -sha256 \
-      -out /root/tls/intermediate/csr/intermediate.csr.pem \
-      -subj "/C=US/ST=CA/L=TE/O=TEST/OU=TESTING/CN=intermediate-cert.$ROOT_DOMAIN/EMAIL=sec@$ROOT_DOMAIN"
+#openssl req -config intermediate/openssl.cnf \
+#      -key /root/tls/intermediate/private/intermediate.key.pem \
+#      -new -sha256 \
+#      -out /root/tls/intermediate/csr/intermediate.csr.pem \
+#      -subj "/C=US/ST=CA/L=TE/O=TEST/OU=TESTING/CN=intermediate-cert.$ROOT_DOMAIN/EMAIL=sec@$ROOT_DOMAIN"
 
 
-echo "Created Intermediate CSR"
+#echo "Created Intermediate CSR"
 
 #Creating an intermediate certificate, by signing the previous csr with the CA key based on root ca config with the directive v3_intermediate_ca extension to sign the intermediate CSR
-openssl ca -config openssl.cnf -extensions v3_intermediate_ca -days 2650 -notext -batch -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem
+#openssl ca -config openssl.cnf -extensions v3_intermediate_ca -days 2650 -notext -batch -in intermediate/csr/intermediate.csr.pem -out intermediate/certs/intermediate.cert.pem
 
-echo "Created Intermediate Certificate Signed by root CA"
+#echo "Created Intermediate Certificate Signed by root CA"
 
 #Grant everyone reading rights
-chmod 444 /root/tls/intermediate/certs/intermediate.cert.pem
+#chmod 444 /root/tls/intermediate/certs/intermediate.cert.pem
 
 
 #Creating certificate chain with intermediate and root
-cat /root/tls/intermediate/certs/intermediate.cert.pem \
-      /root/tls/certs/ca.cert.pem > /root/tls/intermediate/certs/ca-chain.cert.pem
+cat /root/tls/certs/ca.cert.pem > /root/tls/intermediate/certs/ca-chain.cert.pem
 chmod 444 /root/tls/intermediate/certs/ca-chain.cert.pem
 
 
