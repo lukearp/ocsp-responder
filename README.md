@@ -58,13 +58,19 @@ docker exec -it ocsp ./create_san_wildcard_cert cluster-2 kurt-re.demo.redislabs
 Retrieve the cert using it's name
 
 ```
-docker exec -it ocsp ./get_cert cluster-1 > /etc/opt/redislabs/cluster-1_cert.pem
+docker exec -it ocsp ./get_cert client-1 > client-1_cert.cer
 ```
 
 You can also get the key:
 
 ```
-docker exec -it ocsp ./get_key cluster-1 > /etc/opt/redislabs/cluster-1_key.pem
+docker exec -it ocsp ./get_key client-1 > client-1_key.pem
+```
+
+Create a PFX (requires openssl installed on the machine creating the PFX):
+
+```
+openssl pkcs12 -export -out client-1.pfx -inkey client-1_key.pem -in client-1_cert.cer
 ```
 
 And the cert CA chain:
